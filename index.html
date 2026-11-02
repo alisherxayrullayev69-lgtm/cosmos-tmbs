@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpaceTravel | Elon Musk Style Cosmic Exploration</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            900: '#030712',
+                            800: '#0b0f19',
+                            700: '#111827',
+                        },
+                        neon: {
+                            cyan: '#00f3ff',
+                            purple: '#9d4edd',
+                            pink: '#ff007f'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 15px rgba(0, 243, 255, 0.1)' },
+                            '100%': { boxShadow: '0 0 30px rgba(157, 78, 221, 0.6), inset 0 0 20px rgba(157, 78, 221, 0.3)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 243, 255, 0.6);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px -10px rgba(0, 243, 255, 0.3);
+        }
+        /* Custom Glowing Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+            border: 1px solid rgba(0,243,255,0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #ffffff 0%, #00f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-purple {
+            background: linear-gradient(135deg, #00f3ff 0%, #9d4edd 50%, #ff007f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-neon-cyan {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid #00f3ff;
+            color: #00f3ff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-neon-cyan:hover {
+            background: #00f3ff;
+            color: #030712;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+        }
+        .btn-neon-purple {
+            background: linear-gradient(90deg, #9d4edd, #ff007f);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
+            transition: all 0.3s ease;
+        }
+        .btn-neon-purple:hover {
+            box-shadow: 0 0 35px rgba(255, 0, 127, 0.8);
+            transform: scale(1.02);
+        }
+        /* Modal Backdrop blur */
+        .modal-backdrop {
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen text-gray-100 selection:bg-cyan-500 selection:text-black">
+
+    <!-- Interactive Background Stars Canvas -->
+    <canvas id="starsCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 w-full z-40 glass-panel border-b border-gray-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center p-0.5 group-hover:rotate-12 transition-transform duration-300">
+                    <div class="w-full h-full bg-space-900 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid font-bold fa-shuttle-space text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-orbitron font-black text-xl tracking-wider text-white">SPACE<span class="text-cyan-400">X</span></span>
+                    <span class="text-[9px] font-orbitron tracking-widest text-cyan-400/80 uppercase">Odyssey Portals</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium font-orbitron tracking-wide">
+                <a href="#hero" class="text-gray-300 hover:text-cyan-400 transition-colors">Bosh Sahifa</a>
+                <a href="#destinations" class="text-gray-300 hover:text-cyan-400 transition-colors">Yo'nalishlar</a>
+                <a href="#fleet" class="text-gray-300 hover:text-cyan-400 transition-colors">Flotimiz</a>
+                <a href="#news" class="text-gray-300 hover:text-cyan-400 transition-colors">Yangiliklar</a>
+                <a href="#stats" class="text-gray-300 hover:text-cyan-400 transition-colors">Statistika</a>
+            </nav>
+
+            <!-- Launch Portal & Booking Buttons -->
+            <div class="hidden sm:flex items-center space-x-4">
+                <button onclick="openPortalModal()" class="px-5 py-2.5 rounded-xl font-orbitron text-xs font-semibold btn-neon-cyan flex items-center gap-2">
+                    <i class="fa-solid fa-satellite-dish"></i> Portalga Kirish
+                </button>
+                <button onclick="openBookingModal('Mars')" class="px-5 py-2.5 rounded-xl font-orbitron text-xs font-semibold btn-neon-purple">
+                    Chipta Bron Qilish
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobileMenuBtn" class="md:hidden text-gray-300 hover:text-cyan-400 focus:outline-none p-2">
+                <i class="fa-solid fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden glass-panel border-b border-gray-800 px-6 py-6 space-y-4">
+            <a href="#hero" class="block text-gray-300 hover:text-cyan-400 font-orbitron">Bosh Sahifa</a>
+            <a href="#destinations" class="block text-gray-300 hover:text-cyan-400 font-orbitron">Yo'nalishlar</a>
+            <a href="#fleet" class="block text-gray-300 hover:text-cyan-400 font-orbitron">Flotimiz</a>
+            <a href="#news" class="block text-gray-300 hover:text-cyan-400 font-orbitron">Yangiliklar</a>
+            <div class="pt-4 flex flex-col gap-3">
+                <button onclick="openPortalModal()" class="w-full py-3 rounded-xl font-orbitron text-xs font-semibold btn-neon-cyan">
+                    Portalga Kirish
+                </button>
+                <button onclick="openBookingModal('Mars')" class="w-full py-3 rounded-xl font-orbitron text-xs font-semibold btn-neon-purple">
+                    Chipta Bron Qilish
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative pt-32 pb-20 md:pt-44 md:pb-32 overflow-hidden z-10 min-h-screen flex items-center">
+        <!-- Glowing background gradient orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-orbitron uppercase tracking-widest animate-pulse">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Elon Musk Starship Generation V
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-orbitron font-black leading-none tracking-tight">
+                        KOSMOSGA <br/>
+                        <span class="text-gradient-purple uppercase">SAYOXAT QILING</span>
+                    </h1>
+
+                    <p class="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        Insoniyatning kelajagi ko'p planetali sivilizatsiyadir. Mars va Oyga navbatdagi tijorat parvozlari uchun o'zingizning interaktiv chiptangizni hozirdan band qiling.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <button onclick="openBookingModal('Mars')" class="w-full sm:w-auto px-8 py-4 rounded-xl font-orbitron font-bold text-sm btn-neon-purple flex items-center justify-center gap-3 group">
+                            <span>RESERVASIYA QILISH</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                        <a href="#destinations" class="w-full sm:w-auto px-8 py-4 rounded-xl font-orbitron font-semibold text-sm btn-neon-cyan text-center">
+                            PLANETALARNI O'RGANISH
+                        </a>
+                    </div>
+
+                    <!-- Countdown Live Bar -->
+                    <div class="pt-8 grid grid-cols-4 gap-3 sm:gap-6 max-w-lg mx-auto lg:mx-0">
+                        <div class="glass-panel p-3 sm:p-4 rounded-xl text-center border-t-2 border-cyan-500">
+                            <span id="days" class="block font-orbitron text-xl sm:text-3xl font-bold text-cyan-400">142</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-orbitron uppercase">Kun</span>
+                        </div>
+                        <div class="glass-panel p-3 sm:p-4 rounded-xl text-center border-t-2 border-cyan-500">
+                            <span id="hours" class="block font-orbitron text-xl sm:text-3xl font-bold text-cyan-400">08</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-orbitron uppercase">Soat</span>
+                        </div>
+                        <div class="glass-panel p-3 sm:p-4 rounded-xl text-center border-t-2 border-cyan-500">
+                            <span id="minutes" class="block font-orbitron text-xl sm:text-3xl font-bold text-cyan-400">45</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-orbitron uppercase">Daqiqa</span>
+                        </div>
+                        <div class="glass-panel p-3 sm:p-4 rounded-xl text-center border-t-2 border-purple-500">
+                            <span id="seconds" class="block font-orbitron text-xl sm:text-3xl font-bold text-pink-500">12</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-orbitron uppercase">Soniya</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D/CSS Futuristic Planet Visual Display -->
+                <div class="lg:col-span-5 flex justify-center relative">
+                    <div class="relative w-72 h-72 sm:w-96 sm:h-96 animate-float">
+                        <!-- Orbit Rings -->
+                        <div class="absolute inset-0 rounded-full border border-cyan-500/30 animate-spin" style="animation-duration: 25s;"></div>
+                        <div class="absolute -inset-6 rounded-full border border-dashed border-purple-500/20 animate-spin" style="animation-duration: 40s; animation-direction: reverse;"></div>
+
+                        <!-- Planet Sphere SVG Graphic -->
+                        <div class="w-full h-full rounded-full bg-gradient-to-tr from-red-600 via-orange-500 to-amber-300 shadow-[0_0_80px_rgba(239,68,68,0.5)] relative overflow-hidden flex items-center justify-center">
+                            <!-- Atmosphere details -->
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.4),transparent_60%)]"></div>
+                            <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_70%_70%,rgba(0,0,0,0.8),transparent_70%)]"></div>
+                            <!-- Planet surface texture simulation -->
+                            <div class="w-full h-full opacity-30 bg-repeat bg-cover" style="background-image: radial-gradient(#000 15%, transparent 16%), radial-gradient(#000 15%, transparent 16%); background-size: 30px 30px; background-position: 0 0, 15px 15px;"></div>
+                        </div>
+
+                        <!-- Floating Moon -->
+                        <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-gradient-to-tr from-gray-400 to-slate-100 shadow-[0_0_30px_rgba(255,255,255,0.4)] border border-gray-300/30 animate-bounce" style="animation-duration: 5s;"></div>
+
+                        <!-- HUD Badge -->
+                        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 glass-panel border border-cyan-400/40 px-5 py-2.5 rounded-2xl flex items-center gap-3 shadow-2xl">
+                            <i class="fa-solid fa-location-crosshairs text-cyan-400 animate-spin"></i>
+                            <div>
+                                <div class="text-[10px] text-gray-400 font-orbitron">MISHON MAQSADI</div>
+                                <div class="text-xs font-bold font-orbitron text-white">MARS BAZASI 01</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESTINATIONS SECTION -->
+    <section id="destinations" class="py-24 relative z-10 bg-space-800/40 border-y border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-orbitron text-cyan-400 tracking-widest uppercase font-bold">Kosmik Manzillar</h2>
+                <p class="text-3xl sm:text-5xl font-orbitron font-black text-white">ORZUINGIZDAGI PLANETANI TANLANG</p>
+                <p class="text-gray-400 text-sm sm:text-base">Har bir yo'nalish SpaceX Starship kemalarida yuqori xavfsizlik va hashamatli sharoitlar bilan ta'minlangan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Planet Card 1: MARS -->
+                <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-60 overflow-hidden bg-gradient-to-b from-red-950/40 to-space-900">
+                            <!-- SVG Representation of Mars -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-40 h-40 rounded-full bg-gradient-to-tr from-red-700 via-orange-600 to-amber-500 shadow-[0_0_50px_rgba(220,38,38,0.4)] group-hover:scale-110 transition-transform duration-500"></div>
+                            </div>
+                            <span class="absolute top-4 right-4 bg-red-600/80 text-white font-orbitron text-[10px] px-3 py-1 rounded-full border border-red-400/30">ENG OMMABOP</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <h3 class="text-2xl font-orbitron font-bold text-white group-hover:text-cyan-400 transition-colors">Mars Ekspeditsiyasi</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Qizil planetada yangi sivilizatsiya barpo eting. Alpha Colony shahriga birinchi sayyohlardan bo'ling.</p>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-orbitron border-t border-gray-800">
+                                <div>
+                                    <span class="text-gray-500 block">MASOFA:</span>
+                                    <span class="text-cyan-400 font-semibold">225 Mln km</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 block">PARVOZ VAQTI:</span>
+                                    <span class="text-cyan-400 font-semibold">6 Oylik Parvoz</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex gap-3">
+                        <button onclick="openPlanetModal('Mars')" class="w-1/2 py-3 rounded-xl border border-cyan-500/40 text-cyan-400 font-orbitron text-xs hover:bg-cyan-500/10 transition-all">
+                            Batafsil
+                        </button>
+                        <button onclick="openBookingModal('Mars')" class="w-1/2 py-3 rounded-xl btn-neon-purple font-orbitron text-xs font-bold">
+                            Chipta Bron
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Planet Card 2: LUNAR OY -->
+                <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-60 overflow-hidden bg-gradient-to-b from-slate-900 to-space-900">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-40 h-40 rounded-full bg-gradient-to-tr from-gray-500 via-slate-300 to-white shadow-[0_0_50px_rgba(255,255,255,0.3)] group-hover:scale-110 transition-transform duration-500"></div>
+                            </div>
+                            <span class="absolute top-4 right-4 bg-cyan-600/80 text-white font-orbitron text-[10px] px-3 py-1 rounded-full border border-cyan-400/30">VIP RAYON</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <h3 class="text-2xl font-orbitron font-bold text-white group-hover:text-cyan-400 transition-colors">Oy Sayohati (Artemis)</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Oydagi mashhur "Base Alpha" mehmonxonasida unutilmas 14 kunlik ta'tildan bahramand bo'ling.</p>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-orbitron border-t border-gray-800">
+                                <div>
+                                    <span class="text-gray-500 block">MASOFA:</span>
+                                    <span class="text-cyan-400 font-semibold">384,400 km</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 block">PARVOZ VAQTI:</span>
+                                    <span class="text-cyan-400 font-semibold">3 Kunda yetish</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex gap-3">
+                        <button onclick="openPlanetModal('Oy')" class="w-1/2 py-3 rounded-xl border border-cyan-500/40 text-cyan-400 font-orbitron text-xs hover:bg-cyan-500/10 transition-all">
+                            Batafsil
+                        </button>
+                        <button onclick="openBookingModal('Oy')" class="w-1/2 py-3 rounded-xl btn-neon-purple font-orbitron text-xs font-bold">
+                            Chipta Bron
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Planet Card 3: EUROPA (JUPITER MOON) -->
+                <div class="glass-card rounded-2xl overflow-hidden group flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-60 overflow-hidden bg-gradient-to-b from-blue-950/50 to-space-900">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-40 h-40 rounded-full bg-gradient-to-tr from-cyan-700 via-blue-400 to-indigo-200 shadow-[0_0_50px_rgba(6,182,212,0.4)] group-hover:scale-110 transition-transform duration-500"></div>
+                            </div>
+                            <span class="absolute top-4 right-4 bg-purple-600/80 text-white font-orbitron text-[10px] px-3 py-1 rounded-full border border-purple-400/30">YANGI YO'NALISH</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <h3 class="text-2xl font-orbitron font-bold text-white group-hover:text-cyan-400 transition-colors">Yupiter: Yevropa Okeani</h3>
+                            <p class="text-gray-400 text-xs leading-relaxed">Muzlatilgan okeanlar va Yupiterning muazzam ko'rinishi ostidagi eksklyuziv ilmiy sayohat.</p>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-orbitron border-t border-gray-800">
+                                <div>
+                                    <span class="text-gray-500 block">MASOFA:</span>
+                                    <span class="text-cyan-400 font-semibold">628 Mln km</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500 block">PARVOZ VAQTI:</span>
+                                    <span class="text-cyan-400 font-semibold">1.5 Yillik Sayohat</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex gap-3">
+                        <button onclick="openPlanetModal('Europa')" class="w-1/2 py-3 rounded-xl border border-cyan-500/40 text-cyan-400 font-orbitron text-xs hover:bg-cyan-500/10 transition-all">
+                            Batafsil
+                        </button>
+                        <button onclick="openBookingModal('Europa')" class="w-1/2 py-3 rounded-xl btn-neon-purple font-orbitron text-xs font-bold">
+                            Chipta Bron
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPACEX STARSHIP FLEET SECTION -->
+    <section id="fleet" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-6">
+                <div>
+                    <h2 class="text-xs font-orbitron text-cyan-400 tracking-widest uppercase font-bold">Texnologik Mo'jiza</h2>
+                    <p class="text-3xl sm:text-5xl font-orbitron font-black text-white mt-2">STARSHIP KOSMIK FLOTI</p>
+                </div>
+                <p class="text-gray-400 text-sm max-w-md">Dunyodagi eng quvvatli, to'liq qayta ishlatiluvchi raketalar va kosmik kemalar kolleksiyasi.</p>
+            </div>
+
+            <!-- Fleet Interactive Specs Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-4">
+                    <div onclick="selectFleet(0)" id="fleet-card-0" class="fleet-tab glass-panel p-6 rounded-2xl border-l-4 border-cyan-400 cursor-pointer transition-all hover:bg-gray-800/60">
+                        <h4 class="font-orbitron font-bold text-lg text-white">Starship Mark V</h4>
+                        <p class="text-gray-400 text-xs mt-1">100 kishi va 150 tonna yuk sig'imiga ega bo'lgan Mars kemasi.</p>
+                    </div>
+                    <div onclick="selectFleet(1)" id="fleet-card-1" class="fleet-tab glass-panel p-6 rounded-2xl border-l-4 border-transparent cursor-pointer transition-all hover:bg-gray-800/60">
+                        <h4 class="font-orbitron font-bold text-lg text-white">Super Heavy Booster</h4>
+                        <p class="text-gray-400 text-xs mt-1">7200 tonna tortish kuchiga ega raketaning birinchi bosqich tormozi.</p>
+                    </div>
+                    <div onclick="selectFleet(2)" id="fleet-card-2" class="fleet-tab glass-panel p-6 rounded-2xl border-l-4 border-transparent cursor-pointer transition-all hover:bg-gray-800/60">
+                        <h4 class="font-orbitron font-bold text-lg text-white">Lunar Lander Edition</h4>
+                        <p class="text-gray-400 text-xs mt-1">NASA Artemis dasturi uchun maxsus ishlab chiqilgan Oydan qo'nish modali.</p>
+                    </div>
+                </div>
+
+                <!-- Display Visual Spec Box -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-3xl border border-cyan-500/30 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl"></div>
+                    
+                    <div id="fleet-details" class="space-y-6 relative z-10">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                            <div>
+                                <span class="text-xs text-cyan-400 font-orbitron uppercase">Texnik Xarakteristika</span>
+                                <h3 id="fleet-title" class="text-3xl font-orbitron font-black text-white">Starship Mark V</h3>
+                            </div>
+                            <i class="fa-solid fa-rocket text-4xl text-cyan-400/40"></i>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 font-orbitron">
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">BALANDLIGI</span>
+                                <span id="fleet-height" class="text-xl font-bold text-cyan-400">120 Metr</span>
+                            </div>
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">DIAMETRI</span>
+                                <span id="fleet-diameter" class="text-xl font-bold text-cyan-400">9 Metr</span>
+                            </div>
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">YUK SIG'IMI</span>
+                                <span id="fleet-payload" class="text-xl font-bold text-cyan-400">150 Tonna</span>
+                            </div>
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">DVIGATEL</span>
+                                <span id="fleet-engines" class="text-xl font-bold text-purple-400">6 Raptor III</span>
+                            </div>
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">YO'LOVCHILAR</span>
+                                <span id="fleet-passengers" class="text-xl font-bold text-purple-400">100 Kishigacha</span>
+                            </div>
+                            <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                                <span class="text-[10px] text-gray-500 block">YOQILG'I</span>
+                                <span id="fleet-fuel" class="text-xl font-bold text-purple-400">Metan / O2</span>
+                            </div>
+                        </div>
+
+                        <p id="fleet-desc" class="text-gray-300 text-xs sm:text-sm leading-relaxed">
+                            Starship - bu sayyoralararo sayohat uchun mo'ljallangan, to'liq va tezda qayta ishlatilishi mumkin bo'lgan kosmik kema. U yo'lovchilar va yuklarni Yer orbitasiga, Oyga hamda Marsga tashish uchun yaratilgan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIVE STATS SECTION -->
+    <section id="stats" class="py-16 bg-space-900 border-y border-gray-800 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center font-orbitron">
+                <div class="space-y-2">
+                    <div class="text-4xl sm:text-5xl font-black text-gradient-cyan">342</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-widest">Muvaffaqiyatli Parvozlar</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-4xl sm:text-5xl font-black text-gradient-purple">1,240</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-widest">Kosmik Sayyohlar</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-4xl sm:text-5xl font-black text-gradient-cyan">12</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-widest">Mars Bazasidagi Aholi</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-4xl sm:text-5xl font-black text-gradient-purple">100%</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-widest">Qayta Ishlatish Unumi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEWS & ARTICLES SECTION -->
+    <section id="news" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <h2 class="text-xs font-orbitron text-cyan-400 tracking-widest uppercase font-bold">KOSMIK YANGILIKLAR</h2>
+                <p class="text-3xl sm:text-5xl font-orbitron font-black text-white">ENG SO'NGGI MISSIONALAR</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- News Card 1 -->
+                <article class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between text-xs text-cyan-400 font-orbitron">
+                            <span>MARS EXPEDITION</span>
+                            <span>12 Noyabr, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-orbitron font-bold text-white hover:text-cyan-400 transition-colors cursor-pointer">
+                            Marsda birinchi "Starbase City" gumbazi qurilishi yakunlandi
+                        </h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            Elon Musk boshchiligidagi jamoa Mars sirtida 500 kishiga mo'ljallangan birinchi avtonom yashash kompleksini ishga tushirdi.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button onclick="alert('Yangilikning to\'liq matni yuklanmoqda...')" class="text-xs font-orbitron text-cyan-400 hover:text-white flex items-center gap-2">
+                            <span>Batafsil o'qish</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- News Card 2 -->
+                <article class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between text-xs text-purple-400 font-orbitron">
+                            <span>TECHNOLOGY</span>
+                            <span>05 Noyabr, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-orbitron font-bold text-white hover:text-cyan-400 transition-colors cursor-pointer">
+                            Raptor V dvigatellari yangi tezlik rekordini o'rnatdi
+                        </h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            Yangi avlod plazma-metan dvigatellari Yerdan Marsgacha bo'lgan parvoz vaqtini 4 oyga qisqartirish imkonini beradi.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button onclick="alert('Yangilikning to\'liq matni yuklanmoqda...')" class="text-xs font-orbitron text-cyan-400 hover:text-white flex items-center gap-2">
+                            <span>Batafsil o'qish</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- News Card 3 -->
+                <article class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between">
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-center justify-between text-xs text-cyan-400 font-orbitron">
+                            <span>MOON TOURISM</span>
+                            <span>28 Oktyabr, 2026</span>
+                        </div>
+                        <h3 class="text-xl font-orbitron font-bold text-white hover:text-cyan-400 transition-colors cursor-pointer">
+                            Oydagi birinchi nolinchi tortishish kuchi bo'yicha mehmonxona
+                        </h3>
+                        <p class="text-gray-400 text-xs leading-relaxed">
+                            "Lunar Orbit Resort" o'zining birinchi xususiy mehmonlarini qabul qilishga tayyor. Chiptalar sotuvi boshlandi.
+                        </p>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button onclick="alert('Yangilikning to\'liq matni yuklanmoqda...')" class="text-xs font-orbitron text-cyan-400 hover:text-white flex items-center gap-2">
+                            <span>Batafsil o'qish</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-space-900 border-t border-gray-800/80 py-12 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400 flex items-center justify-center">
+                        <i class="fa-solid fa-shuttle-space text-cyan-400 text-sm"></i>
+                    </div>
+                    <span class="font-orbitron font-bold text-white text-lg tracking-wider">SPACE<span class="text-cyan-400">X</span> ODYSSEY</span>
+                </div>
+
+                <div class="text-xs text-gray-500 font-orbitron text-center">
+                    &copy; 2026 SpaceX Odyssey Inc. Barcha huquqlar himoyalangan. IT To'garak Maxsus Loyihasi.
+                </div>
+
+                <div class="flex space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
+                    <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-youtube text-lg"></i></a>
+                    <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+                    <a href="#" class="hover:text-cyan-400 transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- ==================== INTERACTIVE MODALS ==================== -->
+
+    <!-- MODAL 1: BOOKING MODAL (Chipta bron qilish) -->
+    <div id="bookingModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-panel border border-cyan-500/40 rounded-3xl max-w-xl w-full p-6 sm:p-8 relative shadow-[0_0_50px_rgba(0,243,255,0.2)] animate-pulse-glow">
+            <!-- Close Button -->
+            <button onclick="closeModal('bookingModal')" class="absolute top-6 right-6 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-6">
+                <div>
+                    <span class="text-xs font-orbitron text-cyan-400 uppercase tracking-widest">Kosmik Chipta Tizimi</span>
+                    <h3 class="text-2xl font-orbitron font-bold text-white">KOSMIK REYSGA BRON QILISH</h3>
+                </div>
+
+                <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-orbitron text-gray-300 mb-2">ISMINIZ VA FAMILIYANGIZ</label>
+                        <input type="text" required placeholder="Masalan: Ilon Mask" class="w-full bg-space-900/80 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-300 mb-2">MANZIL PLANETA</label>
+                            <select id="modalPlanetSelect" class="w-full bg-space-900 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                                <option value="Mars">Mars Ekspeditsiyasi ($250,000)</option>
+                                <option value="Oy">Oy Sayohati ($50,000)</option>
+                                <option value="Europa">Yupiter Europa ($500,000)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-300 mb-2">PARVOZ KLASSI</label>
+                            <select class="w-full bg-space-900 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                                <option value="economy">Kabin-Ekonom</option>
+                                <option value="business">Biznes Star-Suite</option>
+                                <option value="vip">Zero-G VIP Suite</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-300 mb-2">TASHRIF SANI</label>
+                            <input type="date" required class="w-full bg-space-900/80 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-300 mb-2">YO'LOVCHILAR SONI</label>
+                            <input type="number" min="1" max="6" value="1" class="w-full bg-space-900/80 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-xl font-orbitron font-bold text-sm btn-neon-purple mt-4">
+                        RESERVI TASDIQLASH OYNASI
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 2: PLANET DETAILS MODAL -->
+    <div id="planetModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-panel border border-cyan-500/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeModal('planetModal')" class="absolute top-6 right-6 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div id="planetModalIcon" class="w-16 h-16 rounded-2xl bg-red-600/30 border border-red-500/50 flex items-center justify-center">
+                        <i class="fa-solid fa-globe text-3xl text-red-400"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs font-orbitron text-cyan-400 uppercase">Sayyora haqida ma'lumot</span>
+                        <h3 id="planetModalTitle" class="text-3xl font-orbitron font-bold text-white">MARS EKSPEDITSIYASI</h3>
+                    </div>
+                </div>
+
+                <p id="planetModalDesc" class="text-gray-300 text-sm leading-relaxed">
+                    Mars - Quyosh tizimidagi to'rtinchi planeta. Uning sirti temir gidroksidi tufayli qizg'ish tusda ko'rinadi. SpaceX loyihasi bu yerda birinchi barqaror insoniyat koloniyasini barpo etmoqda.
+                </p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 font-orbitron">
+                    <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                        <span class="text-[10px] text-gray-500 block">HARORAT</span>
+                        <span id="planetModalTemp" class="text-sm font-bold text-cyan-400">-63°C</span>
+                    </div>
+                    <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                        <span class="text-[10px] text-gray-500 block">TORTISH KUCHI</span>
+                        <span id="planetModalGravity" class="text-sm font-bold text-cyan-400">0.38g (38%)</span>
+                    </div>
+                    <div class="bg-space-900/80 p-4 rounded-xl border border-gray-800">
+                        <span class="text-[10px] text-gray-500 block">ATMOSFERA</span>
+                        <span id="planetModalAtmosphere" class="text-sm font-bold text-cyan-400">95% CO2</span>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="closeModal('planetModal'); openBookingModal('Mars');" class="px-6 py-3 rounded-xl btn-neon-purple font-orbitron text-xs font-bold">
+                        Ushbu Planataga Chipta Olish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL 3: LAUNCH PORTAL LOGIN -->
+    <div id="portalModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-backdrop">
+        <div class="glass-panel border border-cyan-500/40 rounded-3xl max-w-md w-full p-6 sm:p-8 relative">
+            <button onclick="closeModal('portalModal')" class="absolute top-6 right-6 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-6 text-center">
+                <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-400/40 flex items-center justify-center mx-auto text-cyan-400 text-2xl">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-orbitron font-bold text-white">PORTALGA KIRISH</h3>
+                    <p class="text-xs text-gray-400 mt-1">Astronavt yoki Sayyoh sifatida profilingizga kiring</p>
+                </div>
+
+                <form onsubmit="handlePortalLogin(event)" class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-orbitron text-gray-300 mb-1">ASTRONAVT ID</label>
+                        <input type="text" required placeholder="SX-99201" class="w-full bg-space-900 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-orbitron text-gray-300 mb-1">XAVFSIZLIK PAROLI</label>
+                        <input type="password" required placeholder="••••••••" class="w-full bg-space-900 border border-gray-700 focus:border-cyan-400 rounded-xl px-4 py-3 text-sm text-white focus:outline-none">
+                    </div>
+                    <button type="submit" class="w-full py-3.5 rounded-xl btn-neon-cyan font-orbitron font-bold text-xs mt-2">
+                        TIZIMGA ULANISH
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. Interactive Starfield Canvas Animation ---
+        const canvas = document.getElementById('starsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let stars = [];
+        const numStars = 200;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.8;
+                this.speedX = (Math.random() - 0.5) * 0.2;
+                this.speedY = (Math.random() - 0.5) * 0.2;
+                this.alpha = Math.random();
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 243, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < numStars; i++) {
+            stars.push(new Star());
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+
+        // --- 2. Mobile Menu Toggle ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+
+        // --- 3. Interactive Fleet Specs Switcher ---
+        const fleetData = [
+            {
+                title: "Starship Mark V",
+                height: "120 Metr",
+                diameter: "9 Metr",
+                payload: "150 Tonna",
+                engines: "6 Raptor III",
+                passengers: "100 Kishigacha",
+                fuel: "Metan / O2",
+                desc: "Starship - bu sayyoralararo sayohat uchun mo'ljallangan, to'liq va tezda qayta ishlatilishi mumkin bo'lgan kosmik kema. U yo'lovchilar va yuklarni Yer orbitasiga, Oyga hamda Marsga tashish uchun yaratilgan."
+            },
+            {
+                title: "Super Heavy Booster",
+                height: "71 Metr",
+                diameter: "9 Metr",
+                payload: "7200 Tonna Thrust",
+                engines: "33 Raptor III",
+                passengers: "Avtonom",
+                fuel: "Suyuq Metan",
+                desc: "Super Heavy - bu Starship raketasining birinchi bosqich tormozlanish bo'limi. U yer tortish kuchini yengib o'tib, kemani ochiq kosmosga olib chiqish vazifasini bajaradi."
+            },
+            {
+                title: "Lunar Lander Edition",
+                height: "50 Metr",
+                diameter: "9 Metr",
+                payload: "100 Tonna",
+                engines: "4 Raptor",
+                passengers: "12 Sayyoh",
+                fuel: "Cryogenic O2",
+                desc: "NASA bilan hamkorlikda yaratilgan ushbu modifikasiya Oy sirtiga xavfsiz va yumshoq qo'nish, hamda tadqiqotchilar uchun qulay sharoit yaratishga mo'ljallangan."
+            }
+        ];
+
+        function selectFleet(index) {
+            const data = fleetData[index];
+            document.getElementById('fleet-title').innerText = data.title;
+            document.getElementById('fleet-height').innerText = data.height;
+            document.getElementById('fleet-diameter').innerText = data.diameter;
+            document.getElementById('fleet-payload').innerText = data.payload;
+            document.getElementById('fleet-engines').innerText = data.engines;
+            document.getElementById('fleet-passengers').innerText = data.passengers;
+            document.getElementById('fleet-fuel').innerText = data.fuel;
+            document.getElementById('fleet-desc').innerText = data.desc;
+
+            // Highlight active tab
+            document.querySelectorAll('.fleet-tab').forEach((tab, idx) => {
+                if (idx === index) {
+                    tab.classList.add('border-cyan-400');
+                    tab.classList.remove('border-transparent');
+                } else {
+                    tab.classList.remove('border-cyan-400');
+                    tab.classList.add('border-transparent');
+                }
+            });
+        }
+
+
+        // --- 4. Modals Control ---
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function openBookingModal(planetName) {
+            const select = document.getElementById('modalPlanetSelect');
+            if (planetName) {
+                select.value = planetName;
+            }
+            openModal('bookingModal');
+        }
+
+        function openPortalModal() {
+            openModal('portalModal');
+        }
+
+        const planetDetailsData = {
+            'Mars': {
+                title: 'MARS EKSPEDITSIYASI',
+                desc: 'Mars - Quyosh tizimidagi to\'rtinchi planeta. Uning sirti temir gidroksidi tufayli qizg\'ish tusda ko\'rinadi. SpaceX loyihasi bu yerda birinchi barqaror insoniyat koloniyasini barpo etmoqda.',
+                temp: '-63°C',
+                gravity: '0.38g (38%)',
+                atmosphere: '95% CO2'
+            },
+            'Oy': {
+                title: 'OY SAYOHATI (LUNAR)',
+                desc: 'Oy - Yerning yagona tabiiy yo\'ldoshi. Bu yerda siz vazinsizlik hissini va oydagi mahsus ilmiy bazalarni ko\'rishingiz mumkin.',
+                temp: '-130°C / +120°C',
+                gravity: '0.16g (16%)',
+                atmosphere: 'Vakuum'
+            },
+            'Europa': {
+                title: 'YUPITER: YEVROPA',
+                desc: 'Yevropa - Yupiterning muzli yo\'ldoshi. Olimlarning ta\'kidlashicha, uning muz qatlami ostida ulkan va chuqur suyuq okean mavjud.',
+                temp: '-160°C',
+                gravity: '0.13g (13%)',
+                atmosphere: 'Kislorod Izlari'
+            }
+        };
+
+        function openPlanetModal(planetKey) {
+            const data = planetDetailsData[planetKey];
+            if (data) {
+                document.getElementById('planetModalTitle').innerText = data.title;
+                document.getElementById('planetModalDesc').innerText = data.desc;
+                document.getElementById('planetModalTemp').innerText = data.temp;
+                document.getElementById('planetModalGravity').innerText = data.gravity;
+                document.getElementById('planetModalAtmosphere').innerText = data.atmosphere;
+                openModal('planetModal');
+            }
+        }
+
+        // --- 5. Form Submissions ---
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            alert("Muvaffaqiyatli! Sizning kosmik chipta bron so'rovingiz qabul qilindi. Tez orada SpaceX operatori siz bilan bog'lanadi!");
+            closeModal('bookingModal');
+        }
+
+        function handlePortalLogin(e) {
+            e.preventDefault();
+            alert("Xush kelibsiz Astronavt! SpaceX Odyssey boshqaruv paneliga muvaffaqiyatli ulandingiz.");
+            closeModal('portalModal');
+        }
+
+
+        // --- 6. Live Timer Countdown ---
+        let seconds = 12, minutes = 45, hours = 8, days = 142;
+        setInterval(() => {
+            seconds--;
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+                if (minutes < 0) {
+                    minutes = 59;
+                    hours--;
+                }
+            }
+            document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+        }, 1000);
+    </script>
+</body>
+</html>
